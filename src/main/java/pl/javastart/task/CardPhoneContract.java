@@ -5,6 +5,7 @@ class CardPhoneContract extends Contract {
     private int sumSms;
     private int sumMms;
     private int sumPhoneCallSeconds;
+    private static final int SECONDS_IN_MINUTE = 60;
 
     public CardPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost, double balance) {
         super(smsCost, oneMinuteCallCost, mmsCost);
@@ -21,36 +22,38 @@ class CardPhoneContract extends Contract {
 
     @Override
     public void sendSms() {
-        super.sendSms();
-        if (accountBalance >= getSmsCost()) {
-            System.out.println("SMS wysłany");
-            setAccountBalance(- getSmsCost());
+        if (accountBalance == 0 || accountBalance < getSmsCost()) {
+            noMoneyToSendSms();
+        } else if (accountBalance >= getSmsCost()) {
+            smsSent();
+            setAccountBalance(getAccountBalance() - getSmsCost());
             sumSms++;
-        } else {
-            System.out.println("Nie udało się wysłać SMSa");
         }
     }
 
     @Override
     public void sendMms() {
-        super.sendMms();
-        if (accountBalance >= getMmsCost()) {
-            System.out.println("MMS wysłany");
-            setAccountBalance(- getMmsCost());
+        if (accountBalance == 0 || accountBalance < getMmsCost()) {
+            noMoneyToSendMms();
+        } else if (accountBalance >= getMmsCost()) {
+            mmsSent();
+            setAccountBalance(getAccountBalance() - getMmsCost());
             sumMms++;
-        } else {
-            System.out.println("Nie udało się wysłać MMSa");
         }
     }
 
     @Override
     public void call(int seconds) {
         super.call(seconds);
-        if (accountBalance > seconds) {
+        if (accountBalance == 0 && (accountBalance * 100) < seconds) {
+            noMoneyToCall();
+        } else if ((accountBalance * 100) >= seconds) {
             System.out.println("Rozmowa trwała: " + seconds + " sekund");
             sumPhoneCallSeconds += seconds;
-        } else if (accountBalance < seconds) {
-            System.out.println("Brak środków na koncie, nie możesz zadzwonić");
+            setAccountBalance(getAccountBalance() - calculateCost(seconds));
+        } else {
+            System.out.println("Rozmowa trwała: " + seconds + " sekund i wyzerowałeś konto");
+            setAccountBalance(0);
         }
     }
 
@@ -60,6 +63,13 @@ class CardPhoneContract extends Contract {
         System.out.println("Wysłanych SMSów: " + sumSms);
         System.out.println("Wysłanych MMSów: " + sumMms);
         System.out.println("Liczba sekund rozmowy: " + sumPhoneCallSeconds);
-        System.out.println("Na koncie zostało " + accountBalance + " zł");
+        System.out.println("Na koncie zostało ");
+        System.out.printf("%.2f", getAccountBalance());
+        System.out.print(" zł\n\n");
+    }
+
+    @Override
+    public double calculateCost(int seconds) {
+        return getOneMinuteCallCost() / SECONDS_IN_MINUTE * seconds;
     }
 }

@@ -5,7 +5,7 @@ class SubscriptionPhoneContract extends Contract {
     private int sumMms;
     private int sumPhoneCallSeconds;
 
-    public SubscriptionPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost, int costOfSubscription) {
+    public SubscriptionPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost) {
         super(smsCost, oneMinuteCallCost, mmsCost);
         this.setSmsCost(0);
         this.setMmsCost(0);
@@ -14,13 +14,13 @@ class SubscriptionPhoneContract extends Contract {
 
     @Override
     public void sendSms() {
-        System.out.println("SMS wysłany");
+        smsSent();
         sumSms++;
     }
 
     @Override
     public void sendMms() {
-        System.out.println("MMS wysłany");
+        mmsSent();
         sumMms++;
     }
 
@@ -37,5 +37,7 @@ class SubscriptionPhoneContract extends Contract {
         System.out.println("Wysłanych MMSów: " + sumMms);
         System.out.println("Liczba sekund rozmowy: " + sumPhoneCallSeconds);
         System.out.println("Na koncie zostało: KONTO NO LIMIT");
+        int costOfSubscription = 30;
+        System.out.println("Miesięczny koszt abonamentu: " + costOfSubscription + " zł\n");
     }
 }
