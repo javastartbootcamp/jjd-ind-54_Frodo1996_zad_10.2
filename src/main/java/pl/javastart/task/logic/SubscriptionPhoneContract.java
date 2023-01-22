@@ -11,11 +11,6 @@ public class SubscriptionPhoneContract extends Contract {
         this.setOneMinuteCallCost(0);
     }
 
-//    @Override
-//    public void smsSent() {
-//        super.smsSent();
-//    }
-
     @Override
     public void sendSms() {
         smsSent();
