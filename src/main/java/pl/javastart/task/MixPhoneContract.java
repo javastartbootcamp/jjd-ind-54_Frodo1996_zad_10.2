@@ -1,7 +1,5 @@
 package pl.javastart.task;
 
-import java.io.PrintStream;
-
 class MixPhoneContract extends Contract {
     private static final int SMS_LIMIT = 100;
     private static final int MMS_LIMIT = 50;
