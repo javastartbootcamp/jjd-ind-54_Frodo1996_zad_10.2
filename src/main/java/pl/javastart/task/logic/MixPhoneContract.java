@@ -1,16 +1,14 @@
-package pl.javastart.task;
+package pl.javastart.task.logic;
 
-class MixPhoneContract extends Contract {
+public class MixPhoneContract extends Contract {
     private static final int SMS_LIMIT = 100;
     private static final int MMS_LIMIT = 50;
     private static final int SECONDS_LIMIT = 60;
     private static final int SECONDS_IN_MINUTE = 60;
     private double accountBalance;
-    private int sentSms;
-    private int sentMms;
     private int sumPhoneCallSeconds;
 
-    public MixPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost, double accountBalance) {
+    public MixPhoneContract(double smsCost, double mmsCost, double oneMinuteCallCost, double accountBalance) {
         super(smsCost, oneMinuteCallCost, mmsCost);
         this.accountBalance = accountBalance;
     }
@@ -27,9 +25,10 @@ class MixPhoneContract extends Contract {
     public void sendSms() {
         if (sentSms <= SMS_LIMIT) {
             smsSent();
-            sentSms++;
+            sumSentSms();
         } else if (getAccountBalance() >= getSmsCost()) {
             System.out.println("SMS wysłany, kosztował: " + getSmsCost() + " zł");
+            sumSentSms();
             accountBalance -= getSmsCost();
         } else {
             noMoneyToSendSms();
@@ -40,9 +39,10 @@ class MixPhoneContract extends Contract {
     public void sendMms() {
         if (sentMms <= MMS_LIMIT) {
             mmsSent();
-            sentMms++;
+            sumSentMms();
         } else if (getAccountBalance() >= getMmsCost()) {
             System.out.println("MMS wysłany, kosztował: " + getMmsCost() + " zł");
+            sumSentMms();
             accountBalance -= getMmsCost();
         } else {
             noMoneyToSendMms();
@@ -72,8 +72,8 @@ class MixPhoneContract extends Contract {
     @Override
     public void printAccountState() {
         super.printAccountState();
-        System.out.println("Wysłanych SMSów: " + sentSms);
-        System.out.println("Wysłanych MMSów: " + sentMms);
+        System.out.println("Wysłanych SMSów: " + numberOfSentSms());
+        System.out.println("Wysłanych MMSów: " + numberOfSentMms());
         System.out.println("Liczba sekund rozmowy: " + sumPhoneCallSeconds);
         System.out.println("Na koncie zostało: ");
         System.out.printf("%.2f", getAccountBalance());

@@ -1,13 +1,11 @@
-package pl.javastart.task;
+package pl.javastart.task.logic;
 
-class CardPhoneContract extends Contract {
-    private double accountBalance;
-    private int sumSms;
-    private int sumMms;
-    private int sumPhoneCallSeconds;
-    private static final int SECONDS_IN_MINUTE = 60;
+public class CardPhoneContract extends Contract {
+    double accountBalance;
+    int sumPhoneCallSeconds;
+    static final int SECONDS_IN_MINUTE = 60;
 
-    public CardPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost, double balance) {
+    public CardPhoneContract(double smsCost, double mmsCost, double oneMinuteCallCost, double balance) {
         super(smsCost, oneMinuteCallCost, mmsCost);
         this.accountBalance = balance;
     }
@@ -16,7 +14,7 @@ class CardPhoneContract extends Contract {
         return accountBalance;
     }
 
-    private void setAccountBalance(double accountBalance) {
+    void setAccountBalance(double accountBalance) {
         this.accountBalance = accountBalance;
     }
 
@@ -27,7 +25,7 @@ class CardPhoneContract extends Contract {
         } else if (accountBalance >= getSmsCost()) {
             smsSent();
             setAccountBalance(getAccountBalance() - getSmsCost());
-            sumSms++;
+            sumSentSms();
         }
     }
 
@@ -38,13 +36,12 @@ class CardPhoneContract extends Contract {
         } else if (accountBalance >= getMmsCost()) {
             mmsSent();
             setAccountBalance(getAccountBalance() - getMmsCost());
-            sumMms++;
+            sumSentMms();
         }
     }
 
     @Override
     public void call(int seconds) {
-        super.call(seconds);
         if (accountBalance == 0 && (accountBalance * 100) < seconds) {
             noMoneyToCall();
         } else if ((accountBalance * 100) >= seconds) {
@@ -60,8 +57,8 @@ class CardPhoneContract extends Contract {
     @Override
     public void printAccountState() {
         super.printAccountState();
-        System.out.println("Wysłanych SMSów: " + sumSms);
-        System.out.println("Wysłanych MMSów: " + sumMms);
+        System.out.println("Wysłanych SMSów: " + numberOfSentSms());
+        System.out.println("Wysłanych MMSów: " + numberOfSentMms());
         System.out.println("Liczba sekund rozmowy: " + sumPhoneCallSeconds);
         System.out.println("Na koncie zostało ");
         System.out.printf("%.2f", getAccountBalance());
@@ -71,5 +68,10 @@ class CardPhoneContract extends Contract {
     @Override
     public double calculateCost(int seconds) {
         return getOneMinuteCallCost() / SECONDS_IN_MINUTE * seconds;
+    }
+
+    @Override
+    public String contractName() {
+        return "'NA KARTĘ'";
     }
 }

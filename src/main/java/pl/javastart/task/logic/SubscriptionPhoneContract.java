@@ -1,27 +1,31 @@
-package pl.javastart.task;
+package pl.javastart.task.logic;
 
-class SubscriptionPhoneContract extends Contract {
-    private int sumSms;
-    private int sumMms;
-    private int sumPhoneCallSeconds;
+public class SubscriptionPhoneContract extends Contract {
+    int sumPhoneCallSeconds;
+    int costOfSubscription;
 
-    public SubscriptionPhoneContract(double smsCost, double oneMinuteCallCost, double mmsCost) {
-        super(smsCost, oneMinuteCallCost, mmsCost);
+    public SubscriptionPhoneContract(int costOfSubscription) {
+        this.costOfSubscription = costOfSubscription;
         this.setSmsCost(0);
         this.setMmsCost(0);
         this.setOneMinuteCallCost(0);
     }
 
+//    @Override
+//    public void smsSent() {
+//        super.smsSent();
+//    }
+
     @Override
     public void sendSms() {
         smsSent();
-        sumSms++;
+        sumSentSms();
     }
 
     @Override
     public void sendMms() {
         mmsSent();
-        sumMms++;
+        sumSentMms();
     }
 
     @Override
@@ -33,11 +37,15 @@ class SubscriptionPhoneContract extends Contract {
     @Override
     public void printAccountState() {
         super.printAccountState();
-        System.out.println("Wysłanych SMSów: " + sumSms);
-        System.out.println("Wysłanych MMSów: " + sumMms);
+        System.out.println("Wysłanych SMSów: " + numberOfSentSms());
+        System.out.println("Wysłanych MMSów: " + numberOfSentMms());
         System.out.println("Liczba sekund rozmowy: " + sumPhoneCallSeconds);
         System.out.println("Na koncie zostało: KONTO NO LIMIT");
-        int costOfSubscription = 30;
         System.out.println("Miesięczny koszt abonamentu: " + costOfSubscription + " zł\n");
+    }
+
+    @Override
+    public String contractName() {
+        return "'NA ABONAMENT'";
     }
 }

@@ -1,8 +1,8 @@
-package pl.javastart.task;
+package pl.javastart.task.logic;
 
 public class Phone {
 
-    private Contract contract;
+    Contract contract;
 
     public Phone(Contract contract) {
         this.contract = contract;
